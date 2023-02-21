@@ -25,7 +25,7 @@ func HomePage(w http.ResponseWriter, r *http.Request){
       Time: now.Format("15:04:05"),
     }
 
-    t, err := template.ParseFiles("homepage.html") //parse the html file homepage.html
+    t, err := template.ParseFiles("templates/homepage.html") //parse the html file homepage.html
     if err != nil { // if there is an error
   	  log.Print("template parsing error: ", err) // log it
   	}

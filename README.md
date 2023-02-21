@@ -26,4 +26,5 @@ Point a browser at http://localhost:8181
 
 ## Reference
 
-Go webserver foundations based on [Rosie Hamilton's blog post](https://blog.scottlogic.com/2017/02/28/building-a-web-app-with-go.html)
+* Go webserver foundations based on [Rosie Hamilton's blog post](https://blog.scottlogic.com/2017/02/28/building-a-web-app-with-go.html)
+* Writing [Web Apps in Go](https://go.dev/doc/articles/wiki/)
