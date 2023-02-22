@@ -11,18 +11,18 @@ podman build -t mortcalc .
 ## Run
 
 ```bash
-podman run -d -p 8181:8081 mortcalc
+podman run -d -p 3001:3001 mortcalc
 ```
 
 ## Test
 
 ```bash
-curl http://localhost:8181
+curl http://localhost:3001
 ```
 
 ## Use
 
-Point a browser at http://localhost:8181
+Point a browser at http://localhost:3001
 
 ## Reference
 

@@ -1,8 +1,6 @@
 FROM docker.io/golang
-# COPY server.go server.go
-# RUN go build server.go
-COPY template.go template.go
-COPY templates/homepage.html templates/homepage.html
-RUN go build template.go
-CMD ["./template"]
-EXPOSE 8181
+COPY mortcalc.go mortcalc.go
+COPY templates/mort*.html templates/
+RUN go build mortcalc.go
+CMD ["./mortcalc"]
+EXPOSE 3001
