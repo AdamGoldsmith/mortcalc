@@ -11,7 +11,7 @@ podman build -t mortcalc .
 ## Run
 
 ```bash
-podman run -d -p 8181:8080 mortcalc
+podman run -d -p 8181:8081 mortcalc
 ```
 
 ## Test
