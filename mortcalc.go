@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"math"
+	"strconv"
 )
 
 const serverPort = 3001
@@ -23,57 +24,77 @@ func (cv CalcVariables) Compound() float64 {
 	return math.Round((cv.Principal*math.Pow(1+cv.Interest/(100*cv.Frequency), cv.Frequency*cv.Term/12))*100)/100
 }
 
-func showCalc(cv CalcVariables) http.Handler {
-	sc := func(w http.ResponseWriter, r *http.Request) {
-		t, err := template.ParseFiles("templates/mortcalc.html")
-		if err != nil {
-			log.Print("template parsing error: ", err)
-		}
-		err = t.Execute(w, cv)
-		if err != nil {
-			log.Print("template executing error: ", err)
-		}
-	}
-	return http.HandlerFunc(sc)
-}
-
-func showAmount(a float64) http.Handler {
-	sa := func(w http.ResponseWriter, r *http.Request) {
-		t, err := template.ParseFiles("templates/mortamount.html")
-		if err != nil {
-			log.Print("template parsing error: ", err)
-		}
-		err = t.Execute(w, a)
-		if err != nil {
-			log.Print("template executing error: ", err)
-		}
-	}
-	return http.HandlerFunc(sa)
-}
-
 func main() {
-	mux := http.NewServeMux()
+	// mux := http.NewServeMux()
 
 	// Order of events - would be great to keep this all on one page (nested templates?)
-	// 1. Get CalcVariables from user input forms
-	// 2. Submit will populate CalcVariables struct
+	// 1. Get CalcVariables from user input forms - DONE
+	// 2. Submit will populate CalcVariables struct - DONE
 	// 3. Display calculated amount using Compound method of CalcVariables struct
 	// 4. Brilliant to be able to show each frequency payment
+	// 5. Form value data validation
+	// 6. Push out from main into calc function - prepopulate with default vaules in CalcVariables struct
 
-	MortCalcVars := CalcVariables{
+	params := CalcVariables{
 		Principal: 200000,
 		Interest: 6,
 		Frequency: 365,
-		Term: 12,
+		Term: 300,
 	}
-	log.Print(MortCalcVars.Compound())
-	mc := showCalc(MortCalcVars)
-	mux.Handle("/calc", mc)
-	sa := showAmount(MortCalcVars.Compound())
-	mux.Handle("/amount", sa)
+	log.Print(params, params.Compound())
+
+	// gp := func(w http.ResponseWriter, r *http.Request) {
+	// t := template.Must(template.ParseFiles("templates/input.html"))
+
+	t, err := template.ParseFiles("templates/main.html")
+	if err != nil {
+		log.Print("template parsing error: ", err)
+	}
+
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		log.Print(params)
+		log.Print(r.Method)
+		if r.Method != http.MethodPost {
+			t.Execute(w, nil)
+			return
+		}
+
+		pval, _ := strconv.ParseFloat(r.FormValue("principal"), 64)
+		ival, _ := strconv.ParseFloat(r.FormValue("interest"), 64)
+		fval, _ := strconv.ParseFloat(r.FormValue("frequency"), 64)
+		tval, _ := strconv.ParseFloat(r.FormValue("term"), 64)
+
+		params := CalcVariables{
+			Principal:  pval,
+			Interest:   ival,
+			Frequency:  fval,
+			Term:       tval,
+		}
+
+		log.Print(params)
+		log.Print(params.Compound())
+
+		// t.Execute(w, struct{ Success bool }{true})
+		t.Execute(w, nil)
+		// t, err := template.ParseFiles("templates/mortcalc.html")
+		// if err != nil {
+		// 	log.Print("template parsing error: ", err)
+		// }
+		// err = t.Execute(w, cv)
+		// if err != nil {
+		// 	log.Print("template executing error: ", err)
+		// }
+	})
+
+	// mc := showCalc(MortCalcVars)
+	// mux.Handle("/calc", mc)
+	// sa := showAmount(MortCalcVars.Compound())
+	// mux.Handle("/amount", sa)
+	// calc := getParams()
+	// mux.Handle("/", calc)
 
 	log.Print("Listening on :", serverPort)
-	http.ListenAndServe(fmt.Sprintf(":%d", serverPort), mux)
+	http.ListenAndServe(fmt.Sprintf(":%d", serverPort), nil)
 }
 
 // REFERENCE: https://www.alexedwards.net/blog/an-introduction-to-handlers-and-servemuxes-in-go
