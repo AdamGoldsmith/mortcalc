@@ -14,13 +14,13 @@ type CalcVariables struct {
 	Principal float64    // initial loan
 	Interest  float64    // interest rate
 	Frequency float64    // daily - 365, weekly - 52, monthly - 12, yearly - 1
-	Time      float64    // term in months
+	Term      float64    // term in months
 }
 
 // Compound method referencing CalcVariables
 func (cv CalcVariables) Compound() float64 {
 	// A = P(1 + r/n)^nt
-	return math.Round((cv.Principal*math.Pow(1+cv.Interest/(100*cv.Frequency), cv.Frequency*cv.Time/12))*100)/100
+	return math.Round((cv.Principal*math.Pow(1+cv.Interest/(100*cv.Frequency), cv.Frequency*cv.Term/12))*100)/100
 }
 
 func showCalc(cv CalcVariables) http.Handler {
@@ -64,7 +64,7 @@ func main() {
 		Principal: 200000,
 		Interest: 6,
 		Frequency: 365,
-		Time: 12,
+		Term: 12,
 	}
 	log.Print(MortCalcVars.Compound())
 	mc := showCalc(MortCalcVars)
