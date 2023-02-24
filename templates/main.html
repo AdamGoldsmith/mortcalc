@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+  <head>
+		<style>
+			body {
+				font-family: Arial, Helvetica, sans-serif
+			}
+			footer {
+				text-align: center;
+				padding: 3px;
+				background-color: #F5DF4D;
+				color: black;
+			}
+		</style>
+    <meta charset="utf-8" name="viewport" content="width=device-width">
+    <title>Mortgage calculator</title>
+  </head>
+  <body>
+		<h1>Input loan parameters</h1>
+		<form action="/" method="POST" novalidate>
+			<div>
+				<p><label>Principal amount:</label></p>
+				<p><input type="text" name="principal" value="{{ .Calc.Principal }}"></p>
+			</div>
+			<div>
+				<p><label>Interest rate:</label></p>
+				<p><input type="text" name="interest" value="{{ .Calc.Interest }}"></p>
+			</div>
+			<div>
+				<p><label>Term time (months):</label></p>
+				<p><input type="text" name="term" value="{{ .Calc.Term }}"></p>
+			</div>
+			<div>
+				<p><label>Frequency interest is applied</label></p>
+				<p><select name="frequency">
+					<option value="365"{{ if eq .Calc.Frequency 365 }} selected{{ end }}>Daily</option>
+					<option value="52"{{ if eq .Calc.Frequency 52 }} selected{{ end }}>Weekly</option>
+					<option value="12"{{ if eq .Calc.Frequency 12 }} selected{{ end }}>Monthly</option>
+					<option value="1"{{ if eq .Calc.Frequency 1 }} selected{{ end }}>Yearly</option>
+				</select>
+			</div>
+			<div>
+				<input type="submit" value="Submit values">
+			</div>
+		</form>
+		<hr>
+		<p><strong>Full amount</strong>: {{ .Amount }}</p>
+		<!-- <footer>
+			Adam Goldsmith 2023
+		</footer> -->
+	</body>
+</html>
